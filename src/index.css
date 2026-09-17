@@ -1,0 +1,128 @@
+:root {
+  --ink: #1c1b19;
+  --ink-soft: #3a3834;
+  --paper: #e8e6e1;
+  --paper-deep: #d9d6cf;
+  --mist: #b8b4ab;
+  --line: rgba(28, 27, 25, 0.14);
+  --accent: #6e6a62;
+  --overlay: rgba(18, 17, 15, 0.42);
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-body: "Outfit", system-ui, sans-serif;
+  --section-pad: clamp(3.5rem, 8vw, 6.5rem);
+  --content: min(68rem, calc(100% - 2.5rem));
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse 90% 50% at 10% 0%, rgba(184, 180, 171, 0.28), transparent 55%),
+    radial-gradient(ellipse 70% 40% at 100% 20%, rgba(217, 214, 207, 0.55), transparent 50%),
+    linear-gradient(180deg, #eceae5 0%, var(--paper) 40%, #e4e1db 100%);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+.section {
+  padding: var(--section-pad) 0;
+}
+
+.section__inner {
+  width: var(--content);
+  margin-inline: auto;
+}
+
+.section__eyebrow {
+  margin: 0 0 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.section__title {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.section__lead {
+  margin: 0 0 2rem;
+  max-width: 36rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+  font-size: 1.05rem;
+}
+
+.hint {
+  margin: 1rem 0 0;
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

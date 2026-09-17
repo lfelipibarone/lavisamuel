@@ -1,0 +1,88 @@
+.section {
+  border-top: 1px solid var(--line);
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+  max-width: 36rem;
+  margin-bottom: 2rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.field span {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--ink);
+  resize: vertical;
+}
+
+.field input:focus-visible,
+.field textarea:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.submit {
+  justify-self: start;
+  padding: 0.85rem 1.4rem;
+  border: 0;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1rem;
+  max-width: 42rem;
+}
+
+.note {
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.note:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.noteMessage {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.noteMeta {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: var(--accent);
+}
+
+.clear {
+  margin-top: 1.25rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

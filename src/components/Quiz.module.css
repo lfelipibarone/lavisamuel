@@ -1,0 +1,98 @@
+.section {
+  border-top: 1px solid var(--line);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 40rem;
+}
+
+.progress {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.prompt {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.options {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.option {
+  text-align: left;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--ink);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.option:hover,
+.option:focus-visible {
+  border-color: var(--ink-soft);
+  transform: translateX(2px);
+  outline: none;
+}
+
+.selected {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.button {
+  align-self: start;
+  margin-top: 0.25rem;
+  padding: 0.85rem 1.4rem;
+  border: 0;
+  background: var(--ink);
+  color: var(--paper);
+  letter-spacing: 0.03em;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.button:hover:not(:disabled),
+.button:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.result {
+  max-width: 36rem;
+}
+
+.score {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 10vw, 5.5rem);
+  line-height: 1;
+  font-weight: 500;
+}
+
+.score span {
+  font-size: 0.45em;
+  color: var(--accent);
+}
+
+.message {
+  margin: 1rem 0 1.5rem;
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+}

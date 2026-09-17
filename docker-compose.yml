@@ -1,0 +1,7 @@
+services:
+  web:
+    build: .
+    container_name: lavi-samuel
+    restart: unless-stopped
+    ports:
+      - "80:80"
