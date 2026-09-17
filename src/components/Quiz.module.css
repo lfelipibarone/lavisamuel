@@ -2,6 +2,12 @@
   border-top: 1px solid var(--line);
 }
 
+.embedLead {
+  margin: 0 0 1.25rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+}
+
 .card {
   display: flex;
   flex-direction: column;

@@ -18,7 +18,7 @@ export function Hero({ onAmpersandClick }: Props) {
       />
       <div className={styles.veil} />
       <div className={styles.content}>
-        <p className={styles.date}>24 · 09 · 2026 · 12h</p>
+        <p className={styles.date}>24 · 09 · 2026 · 10h</p>
         <h1 className={styles.brand}>
           Lavi{' '}
           <button
@@ -36,8 +36,8 @@ export function Hero({ onAmpersandClick }: Props) {
           Contagem regressiva com carinho, humor e um pouco de confete.
         </p>
         <Countdown variant="hero" />
-        <a className={styles.cta} href="#quiz">
-          Ir para as brincadeiras
+        <a className={styles.cta} href="#jogos">
+          Ir para os mini games
         </a>
       </div>
     </header>

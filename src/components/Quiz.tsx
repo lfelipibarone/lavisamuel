@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { quizQuestions, scoreMessage } from '../data/quiz'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import { useReveal } from '../hooks/useReveal'
 import styles from './Quiz.module.css'
 
 type QuizState = {
@@ -12,7 +11,6 @@ type QuizState = {
 const initial: QuizState = { answers: {}, finished: false }
 
 export function Quiz() {
-  const ref = useReveal<HTMLElement>()
   const [stored, setStored] = useLocalStorage<QuizState>('lavi-samuel-quiz', initial)
   const [index, setIndex] = useState(() => {
     const answered = Object.keys(stored.answers).length
@@ -48,55 +46,50 @@ export function Quiz() {
   }
 
   return (
-    <section id="quiz" className={`section ${styles.section} reveal`} ref={ref}>
-      <div className="section__inner">
-        <p className="section__eyebrow">Brincadeira 01</p>
-        <h2 className="section__title">Quem conhece melhor o casal?</h2>
-        <p className="section__lead">
-          Responda com o coração (e um pouco de chute educado). O placar fica só neste
-          navegador.
-        </p>
+    <div className={styles.embed}>
+      <p className={styles.embedLead}>
+        Responda com o coração. O placar fica só neste navegador.
+      </p>
 
-        {stored.finished ? (
-          <div className={styles.result}>
-            <p className={styles.score}>
-              {score}
-              <span>/{quizQuestions.length}</span>
-            </p>
-            <p className={styles.message}>{scoreMessage(score, quizQuestions.length)}</p>
-            <button type="button" className={styles.button} onClick={restart}>
-              Refazer quiz
-            </button>
+      {stored.finished ? (
+        <div className={styles.result}>
+          <p className={styles.score}>
+            {score}
+            <span>/{quizQuestions.length}</span>
+          </p>
+          <p className={styles.message}>{scoreMessage(score, quizQuestions.length)}</p>
+          <button type="button" className={styles.button} onClick={restart}>
+            Refazer quiz
+          </button>
+        </div>
+      ) : question ? (
+        <div className={styles.card}>
+          <div className={styles.progress}>
+            Pergunta {index + 1} de {quizQuestions.length}
           </div>
-        ) : question ? (
-          <div className={styles.card}>
-            <div className={styles.progress}>
-              Pergunta {index + 1} de {quizQuestions.length}
-            </div>
-            <h3 className={styles.prompt}>{question.prompt}</h3>
-            <div className={styles.options}>
-              {question.options.map((option, i) => (
-                <button
-                  key={option}
-                  type="button"
-                  className={`${styles.option} ${selected === i ? styles.selected : ''}`}
-                  onClick={() => pick(i)}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-            <button
-              type="button"
-              className={styles.button}
-              onClick={next}
-              disabled={selected == null}
-            >
-              {index >= quizQuestions.length - 1 ? 'Ver resultado' : 'Próxima'}
-            </button>
+          <h3 className={styles.prompt}>{question.prompt}</h3>
+          <div className={styles.options}>
+            {question.options.map((option, i) => (
+              <button
+                key={option}
+                type="button"
+                className={`${styles.option} ${selected === i ? styles.selected : ''}`}
+                onClick={() => pick(i)}
+              >
+                {option}
+              </button>
+            ))}
           </div>
-        ) : null}
-      </div>
-    </section>
+          <button
+            type="button"
+            className={styles.button}
+            onClick={next}
+            disabled={selected == null}
+          >
+            {index >= quizQuestions.length - 1 ? 'Ver resultado' : 'Próxima'}
+          </button>
+        </div>
+      ) : null}
+    </div>
   )
 }

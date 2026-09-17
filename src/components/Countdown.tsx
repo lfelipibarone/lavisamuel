@@ -17,18 +17,25 @@ export function Countdown({ variant = 'hero', onDone }: Props) {
   const fired = useRef(false)
 
   useEffect(() => {
-    if (parts.isDone && !fired.current) {
+    if (parts.phase === 'weddingDay' && !fired.current) {
       fired.current = true
       fireConfetti()
       onDone?.()
     }
-  }, [parts.isDone, onDone])
+  }, [parts.phase, onDone])
 
-  if (parts.isDone) {
+  if (parts.phase === 'weddingDay') {
     return (
       <div className={`${styles.wrap} ${styles[variant]} ${styles.done}`} aria-live="polite">
-        <p className={styles.doneTitle}>É hoje.</p>
-        <p className={styles.doneText}>Lavi & Samuel — o cronômetro virou celebração.</p>
+        <p className={styles.doneTitle}>Chegou o grande dia</p>
+      </div>
+    )
+  }
+
+  if (parts.phase === 'after') {
+    return (
+      <div className={`${styles.wrap} ${styles[variant]} ${styles.done}`} aria-live="polite">
+        <p className={styles.doneTitle}>Obrigado a todos!</p>
       </div>
     )
   }

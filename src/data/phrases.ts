@@ -4,7 +4,7 @@ export const surprisePhrases = [
   'Samuel + Lavi = equação resolvida.',
   'Se o amor fosse Wi-Fi, esse casal teria 5 barras.',
   'Confete mental liberado. Pode sorrir.',
-  'Dia 24, meio-dia: horário nobre do coração.',
+  'Dia 24, 10h: horário nobre do coração.',
   'Você achou um easter egg. Os noivos agradecem a vibe.',
   'Romântico com humor: exatamente o briefing deste site.',
 ]

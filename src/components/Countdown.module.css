@@ -65,7 +65,10 @@
 .doneTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(1.85rem, 5vw, 2.85rem);
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: #f4f2ec;
 }
 
