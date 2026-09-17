@@ -2,7 +2,12 @@ services:
   web:
     build: .
     restart: unless-stopped
-    # Dokploy/Traefik reaches the container on this port.
-    # Do not bind host :80 — that port belongs to the proxy.
-    expose:
-      - "80"
+    # Dokploy: publish container port without binding host :80
+    ports:
+      - "8080"
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
