@@ -1,7 +1,8 @@
 services:
   web:
     build: .
-    container_name: lavi-samuel
     restart: unless-stopped
-    ports:
-      - "80:80"
+    # Dokploy/Traefik reaches the container on this port.
+    # Do not bind host :80 — that port belongs to the proxy.
+    expose:
+      - "80"
