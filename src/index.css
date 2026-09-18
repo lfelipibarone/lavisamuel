@@ -9,9 +9,15 @@
   --overlay: rgba(18, 17, 15, 0.42);
   --font-display: "Cormorant Garamond", "Times New Roman", serif;
   --font-body: "Outfit", system-ui, sans-serif;
-  --section-pad: clamp(3.5rem, 8vw, 6.5rem);
-  --content: min(68rem, calc(100% - 2.5rem));
+  --section-pad: clamp(2.75rem, 7vw, 6.5rem);
+  --content: min(68rem, calc(100% - 1.5rem));
   color-scheme: light;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --content: min(68rem, calc(100% - 2.5rem));
+  }
 }
 
 *,
@@ -89,11 +95,17 @@ a {
 }
 
 .section__lead {
-  margin: 0 0 2rem;
+  margin: 0 0 1.5rem;
   max-width: 36rem;
   color: var(--ink-soft);
   font-weight: 300;
-  font-size: 1.05rem;
+  font-size: clamp(0.98rem, 2.8vw, 1.05rem);
+}
+
+@media (max-width: 640px) {
+  .section__title {
+    font-size: clamp(1.9rem, 8vw, 2.4rem);
+  }
 }
 
 .hint {

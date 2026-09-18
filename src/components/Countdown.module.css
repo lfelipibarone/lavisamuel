@@ -88,10 +88,24 @@
 
 @media (max-width: 480px) {
   .grid {
-    gap: 0.35rem;
+    gap: 0.3rem;
   }
 
   .unit {
-    padding: 0.65rem 0.2rem;
+    padding: 0.55rem 0.15rem;
+  }
+
+  .hero .value {
+    font-size: clamp(1.55rem, 9vw, 2.1rem);
+  }
+
+  .hero .label {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+  }
+
+  .doneTitle {
+    font-size: clamp(1.45rem, 7vw, 2rem);
+    padding-inline: 0.25rem;
   }
 }

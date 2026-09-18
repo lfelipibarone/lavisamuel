@@ -3,7 +3,7 @@
 }
 
 .footer {
-  padding: 2rem 1.25rem 2.75rem;
+  padding: 2rem 1.25rem max(2.5rem, calc(1.5rem + env(safe-area-inset-bottom)));
   border-top: 1px solid var(--line);
   text-align: center;
 }
@@ -25,10 +25,10 @@
 .toast {
   position: fixed;
   left: 50%;
-  bottom: 1.5rem;
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
   z-index: 50;
   transform: translateX(-50%);
-  max-width: min(28rem, calc(100% - 2rem));
+  max-width: min(28rem, calc(100% - 1.5rem));
   padding: 0.9rem 1.2rem;
   background: var(--ink);
   color: var(--paper);

@@ -4,9 +4,15 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.85rem;
   max-width: 36rem;
+}
+
+@media (min-width: 520px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 720px) {
@@ -17,7 +23,7 @@
 
 .tile {
   position: relative;
-  aspect-ratio: 1;
+  aspect-ratio: 4 / 3;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -27,9 +33,16 @@
   background: var(--ink);
   text-align: left;
   color: #f4f2ec;
+  -webkit-tap-highlight-color: transparent;
   transition:
     transform 0.25s ease,
     border-color 0.25s ease;
+}
+
+@media (min-width: 520px) {
+  .tile {
+    aspect-ratio: 1;
+  }
 }
 
 .tileImage {
@@ -61,20 +74,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
-  padding: 1.1rem;
-}
-
-.tile:hover,
-.tile:focus-visible {
-  transform: translateY(-3px);
-  border-color: var(--ink-soft);
-  outline: none;
-}
-
-.tile:hover .tileImage,
-.tile:focus-visible .tileImage {
-  transform: scale(1.05);
-  opacity: 1;
+  padding: 1rem 1.1rem 1.15rem;
 }
 
 .tileLabel {
@@ -86,49 +86,32 @@
 
 .tileTitle {
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  font-size: clamp(1.4rem, 5vw, 1.75rem);
   font-weight: 500;
   line-height: 1.1;
   color: #f4f2ec;
 }
 
 .tileBlurb {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 300;
   color: rgba(244, 242, 236, 0.82);
   line-height: 1.35;
 }
 
-.modal {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: grid;
-  place-items: center;
-  padding: 1rem;
-  background: rgba(18, 17, 15, 0.72);
-  backdrop-filter: blur(5px);
-  animation: fade 0.25s ease;
-}
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover,
+  .tile:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--ink-soft);
+    outline: none;
+  }
 
-.panel {
-  width: min(44rem, 100%);
-  max-height: min(90svh, 920px);
-  display: flex;
-  flex-direction: column;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
-  animation: rise 0.3s ease;
-}
-
-.panelHead {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1.1rem 1.2rem;
-  border-bottom: 1px solid var(--line);
+  .tile:hover .tileImage,
+  .tile:focus-visible .tileImage {
+    transform: scale(1.05);
+    opacity: 1;
+  }
 }
 
 .panelEyebrow {
@@ -142,29 +125,78 @@
 .panelTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-size: clamp(1.45rem, 5vw, 2rem);
   font-weight: 500;
   line-height: 1.1;
 }
 
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: stretch;
+  padding: 0;
+  background: rgba(18, 17, 15, 0.72);
+  backdrop-filter: blur(5px);
+  animation: fade 0.25s ease;
+}
+
+.panel {
+  width: 100%;
+  max-height: 100svh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 0;
+  box-shadow: none;
+  animation: rise 0.3s ease;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (min-width: 720px) {
+  .modal {
+    place-items: center;
+    padding: 1rem;
+  }
+
+  .panel {
+    width: min(44rem, 100%);
+    max-height: min(90svh, 920px);
+    height: auto;
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.panelHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 1rem 1rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
 .close {
   flex-shrink: 0;
-  padding: 0.55rem 0.9rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.95rem;
   border: 1px solid var(--line);
   background: transparent;
   color: var(--ink);
-}
-
-.close:hover,
-.close:focus-visible {
-  border-color: var(--ink);
-  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .panelBody {
   overflow: auto;
-  padding: 1.2rem;
+  padding: 1rem;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 @keyframes fade {

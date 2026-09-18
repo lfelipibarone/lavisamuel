@@ -21,11 +21,35 @@
 
 .stage {
   position: relative;
-  width: min(100%, 720px);
+  width: 100%;
   aspect-ratio: 720 / 420;
+  max-height: min(70svh, 420px);
   background: #1c1b19;
   overflow: hidden;
   border: 1px solid var(--line);
+  touch-action: manipulation;
+}
+
+@media (max-width: 640px) {
+  .stage {
+    aspect-ratio: 4 / 3;
+    max-height: none;
+    min-height: 52svh;
+  }
+
+  .start {
+    min-height: 3rem;
+    width: min(100%, 16rem);
+    padding: 0.95rem 1.25rem;
+  }
+
+  .overlay {
+    padding: 1.1rem;
+  }
+
+  .overlay p {
+    font-size: 0.85rem;
+  }
 }
 
 .canvasHost {
@@ -37,6 +61,7 @@
   display: block;
   width: 100% !important;
   height: 100% !important;
+  touch-action: manipulation;
 }
 
 .overlay {

@@ -11,7 +11,7 @@ type QuizState = {
 const initial: QuizState = { answers: {}, finished: false }
 
 export function Quiz() {
-  const [stored, setStored] = useLocalStorage<QuizState>('lavi-samuel-quiz', initial)
+  const [stored, setStored] = useLocalStorage<QuizState>('lavi-samuel-quiz-v2', initial)
   const [index, setIndex] = useState(() => {
     const answered = Object.keys(stored.answers).length
     return stored.finished ? 0 : Math.min(answered, quizQuestions.length - 1)
