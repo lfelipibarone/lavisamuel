@@ -22,6 +22,7 @@
 .stage {
   position: relative;
   width: 100%;
+  max-width: 100%;
   aspect-ratio: 720 / 420;
   max-height: min(70svh, 420px);
   background: #1c1b19;
@@ -30,25 +31,29 @@
   touch-action: manipulation;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) and (orientation: portrait) {
   .stage {
-    aspect-ratio: 4 / 3;
-    max-height: none;
-    min-height: 52svh;
+    aspect-ratio: 16 / 10;
+    max-height: min(42svh, 280px);
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .stage {
+    aspect-ratio: 720 / 420;
+    max-height: min(62svh, 360px);
   }
 
   .start {
-    min-height: 3rem;
-    width: min(100%, 16rem);
-    padding: 0.95rem 1.25rem;
+    min-height: 2.75rem;
+    width: min(100%, 14rem);
+    padding: 0.75rem 1.1rem;
   }
+}
 
+@media (max-width: 640px) {
   .overlay {
     padding: 1.1rem;
-  }
-
-  .overlay p {
-    font-size: 0.85rem;
   }
 }
 
@@ -64,25 +69,69 @@
   touch-action: manipulation;
 }
 
-.overlay {
+.overlay,
+.rotate {
   position: absolute;
   inset: 0;
   display: grid;
   place-content: center;
   gap: 0.75rem;
   padding: 1.5rem;
-  background:
-    linear-gradient(180deg, rgba(28, 27, 25, 0.55), rgba(28, 27, 25, 0.82)),
-    url('/photos/VAG_7404-sm.webp') center / cover;
   text-align: center;
   color: #e8e6e1;
 }
 
-.overlay p {
+.overlay {
+  background:
+    linear-gradient(180deg, rgba(28, 27, 25, 0.55), rgba(28, 27, 25, 0.82)),
+    url('/photos/VAG_7404-sm.webp') center / cover;
+}
+
+.rotate {
+  z-index: 2;
+  background: rgba(28, 27, 25, 0.92);
+}
+
+.rotateIcon {
+  justify-self: center;
+  width: 2.75rem;
+  height: 4rem;
+  border: 2px solid rgba(232, 230, 225, 0.85);
+  border-radius: 0.45rem;
+  animation: tip 1.6s ease-in-out infinite;
+}
+
+.rotateTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.rotateHint {
   margin: 0;
   font-size: 0.9rem;
   font-weight: 300;
-  color: rgba(232, 230, 225, 0.8);
+  color: rgba(232, 230, 225, 0.75);
+}
+
+@keyframes tip {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  40%,
+  60% {
+    transform: rotate(90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotateIcon {
+    animation: none;
+    transform: rotate(90deg);
+  }
 }
 
 .start {
