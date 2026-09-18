@@ -2,8 +2,13 @@ services:
   web:
     build: .
     restart: unless-stopped
-    # Container listens on 8080 (see nginx.conf).
-    # In Dokploy Domains, set Service=web and Port=8080.
-    # Do not bind host :80 — Traefik owns that.
+    # Publish container port 80 without binding host :80 (Traefik owns host 80).
+    # In Dokploy Domains: Service = web, Port = 80
     ports:
-      - "8080"
+      - "80"
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
