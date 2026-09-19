@@ -1,10 +1,14 @@
+# Optional local/full-stack compose.
+# In Dokploy homolog, prefer TWO separate apps (web + api) — see apps/api/README.md.
+# This compose is only for when both services share dokploy-network AND you want
+# a single stack; the frontend nginx does NOT depend on hostname "api".
+
 services:
   api:
     build:
       context: ./apps/api
       dockerfile: Dockerfile
     restart: unless-stopped
-    # Dokploy Domains: Service = api, Port = 3002 (optional if only reached via web /api)
     ports:
       - "3002"
     environment:
@@ -25,13 +29,10 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: /api
+        VITE_API_URL: ${VITE_API_URL:-https://lavi-samuel-backend-sbzxln-cdf361-177-7-39-127.sslip.io}
     restart: unless-stopped
-    # Dokploy Domains: Service = web, Port = 80
     ports:
       - "80"
-    depends_on:
-      - api
     networks:
       - dokploy-network
 
