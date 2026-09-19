@@ -8,7 +8,7 @@ Hono + Prisma + PostgreSQL backend for guest names, game history, and Drive phot
 |------|--------|
 | **Build context** | `apps/api` |
 | **Dockerfile** | `apps/api/Dockerfile` |
-| **Port** | `3002` |
+| **Port** | `3002` (no Domínio do Dokploy: Service = api, **Port = 3002**) |
 | **Compose (repo root)** | `docker-compose.yml` → services `api` + `web` |
 
 Front (`web`) faz proxy de `/api/*` → `api:3002`. Build do front usa `VITE_API_URL=/api`.
