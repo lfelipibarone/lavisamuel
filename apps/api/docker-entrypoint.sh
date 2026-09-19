@@ -2,15 +2,30 @@
 set -e
 
 PORT_VALUE="${PORT:-3002}"
-echo "Starting LaviESamuel API"
+echo "========================================"
+echo "LaviESamuel API boot"
 echo "PORT=${PORT_VALUE}"
-echo "DATABASE_URL host check: $(echo "$DATABASE_URL" | sed -E 's#://([^:/@]+):[^@]+@#://\1:***@#')"
+echo "NODE_ENV=${NODE_ENV:-}"
+if [ -n "${DATABASE_URL:-}" ]; then
+  echo "DATABASE_URL=$(echo "$DATABASE_URL" | sed -E 's#://([^:/@]+):[^@]+@#://\1:***@#')"
+else
+  echo "WARNING: DATABASE_URL is empty"
+fi
+echo "========================================"
 
-echo "Running prisma migrate deploy..."
-if ! npx prisma migrate deploy; then
-  echo "ERROR: prisma migrate deploy failed."
-  echo "Use the INTERNAL Postgres URL on the same Dokploy network."
-  exit 1
+echo "Running prisma migrate deploy (20s timeout)..."
+set +e
+if command -v timeout >/dev/null 2>&1; then
+  timeout 20 npx prisma migrate deploy
+else
+  npx prisma migrate deploy
+fi
+MIGRATE_STATUS=$?
+set -e
+
+if [ "$MIGRATE_STATUS" -ne 0 ]; then
+  echo "WARNING: prisma migrate deploy exited with ${MIGRATE_STATUS}"
+  echo "API will still start so /health can answer (fix DATABASE_URL / network)."
 fi
 
 echo "Starting HTTP server on 0.0.0.0:${PORT_VALUE}..."

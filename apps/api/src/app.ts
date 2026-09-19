@@ -43,7 +43,14 @@ export function createApp() {
     }),
   )
 
-  app.get('/health', (c) => c.json({ ok: true }))
+  app.get('/health', (c) =>
+    c.json({
+      ok: true,
+      service: 'laviesamuel-api',
+      port: process.env.PORT ?? '3002',
+      time: new Date().toISOString(),
+    }),
+  )
   app.route('/oauth', oauthRoute)
   app.route('/guests', guestsRoute)
   app.route('/results', resultsRoute)
