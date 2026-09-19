@@ -18,11 +18,13 @@
     "dotenv": "^18.0.1",
     "googleapis": "^181.0.0",
     "hono": "^4.9.8",
-    "zod": "^3.25.76",
-    "prisma": "^6.16.2"
+    "prisma": "^6.16.2",
+    "sharp": "^0.35.4",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^24.13.6",
+    "@types/sharp": "^0.31.1",
     "tsx": "^4.20.5",
     "typescript": "~5.9.2"
   }

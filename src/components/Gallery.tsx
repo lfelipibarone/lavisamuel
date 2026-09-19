@@ -21,7 +21,7 @@ export function Gallery() {
         photos.map((photo) => ({
           id: `guest-${photo.id}`,
           src: photo.url,
-          thumb: photo.url,
+          thumb: photo.thumbUrl,
           caption: photo.uploadedBy
             ? `Enviada por ${photo.uploadedBy}`
             : 'Foto dos convidados',
@@ -113,7 +113,12 @@ export function Gallery() {
                 className={styles.item}
                 onClick={() => setActiveIndex(index)}
               >
-                <img src={item.thumb} alt={item.alt} loading="lazy" />
+                <img
+                  src={item.thumb}
+                  alt={item.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
                 <span className={styles.caption}>{item.caption}</span>
               </button>
             ))}

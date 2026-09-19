@@ -1,7 +1,6 @@
 export function apiBaseUrl(): string {
   const fromEnv = (import.meta.env.VITE_API_URL as string | undefined)?.trim()
   if (fromEnv) return fromEnv.replace(/\/$/, '')
-  // Dev: same-origin Vite proxy → apps/api (avoids CORS / wrong port)
   if (import.meta.env.DEV) return '/api'
   return 'http://localhost:3002'
 }
@@ -18,16 +17,30 @@ export type GuestPhoto = {
   createdAt: string | null
   uploadedBy: string | null
   url: string
+  thumbUrl: string
+}
+
+function withAbsoluteUrls(photo: {
+  id: string
+  name: string
+  mimeType: string
+  createdAt: string | null
+  uploadedBy: string | null
+  url: string
+  thumbUrl?: string
+}): GuestPhoto {
+  return {
+    ...photo,
+    url: apiUrl(photo.url),
+    thumbUrl: apiUrl(photo.thumbUrl ?? `/photos/${photo.id}/thumb`),
+  }
 }
 
 export async function listGuestPhotos(): Promise<GuestPhoto[]> {
   const res = await fetch(apiUrl('/photos'))
   if (!res.ok) throw new Error('Não foi possível carregar as fotos')
-  const data = (await res.json()) as { photos: GuestPhoto[] }
-  return data.photos.map((photo) => ({
-    ...photo,
-    url: apiUrl(photo.url),
-  }))
+  const data = (await res.json()) as { photos: Array<Omit<GuestPhoto, 'url' | 'thumbUrl'> & { url: string; thumbUrl?: string }> }
+  return data.photos.map(withAbsoluteUrls)
 }
 
 export async function uploadGuestPhoto(file: File, uploadedBy: string): Promise<GuestPhoto> {
@@ -45,8 +58,11 @@ export async function uploadGuestPhoto(file: File, uploadedBy: string): Promise<
     throw new Error(err?.error ?? 'Falha no upload')
   }
 
-  const photo = (await res.json()) as GuestPhoto
-  return { ...photo, url: apiUrl(photo.url) }
+  const photo = (await res.json()) as Omit<GuestPhoto, 'url' | 'thumbUrl'> & {
+    url: string
+    thumbUrl?: string
+  }
+  return withAbsoluteUrls(photo)
 }
 
 export const GUEST_PHOTOS_EVENT = 'guest-photos-changed'

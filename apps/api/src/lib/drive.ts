@@ -97,16 +97,30 @@ function loadRefreshToken(): string {
 }
 
 let driveClient: drive_v3.Drive | null = null
+let oauthClient: Auth.OAuth2Client | null = null
+
+function getOAuthClient(): Auth.OAuth2Client {
+  if (oauthClient) return oauthClient
+  oauthClient = createOAuth2Client()
+  oauthClient.setCredentials({ refresh_token: loadRefreshToken() })
+  return oauthClient
+}
 
 export function getDrive(): drive_v3.Drive {
   if (driveClient) return driveClient
-
-  const auth = createOAuth2Client()
-  auth.setCredentials({ refresh_token: loadRefreshToken() })
-  driveClient = google.drive({ version: 'v3', auth })
+  driveClient = google.drive({ version: 'v3', auth: getOAuthClient() })
   return driveClient
+}
+
+export async function getAccessToken(): Promise<string> {
+  const auth = getOAuthClient()
+  const result = await auth.getAccessToken()
+  const token = typeof result === 'string' ? result : result?.token
+  if (!token) throw new Error('Failed to refresh Google access token')
+  return token
 }
 
 export function resetDriveClient() {
   driveClient = null
+  oauthClient = null
 }
