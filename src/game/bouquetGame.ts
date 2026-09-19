@@ -3,7 +3,6 @@ import Phaser from 'phaser'
 const W = 720
 const H = 420
 const GROUND_Y = 360
-const TOTAL_ROUNDS = 5
 const BRIDE_FRAME_W = 179
 const BRIDE_FRAME_H = 170
 const CATCHER_FRAME_W = 155
@@ -112,7 +111,7 @@ export class BouquetScene extends Phaser.Scene {
       .setDepth(10)
 
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      if (!this.canMove || this.round > TOTAL_ROUNDS) return
+      if (!this.canMove) return
       const x = Phaser.Math.Clamp(pointer.worldX, 50, W - 50)
       this.catcher.targetX = x
       // Face the direction of movement; default toward bride is left (flipX true)
@@ -192,11 +191,6 @@ export class BouquetScene extends Phaser.Scene {
   }
 
   private startRound() {
-    if (this.round >= TOTAL_ROUNDS) {
-      this.endGame()
-      return
-    }
-
     this.round += 1
     this.roundActive = true
     this.canMove = true
@@ -289,8 +283,8 @@ export class BouquetScene extends Phaser.Scene {
     this.catcher.anims.stop()
     this.catcher.setFrame(0)
     this.updateHud()
-    this.statusText.setText('Quase... próxima!')
-    this.time.delayedCall(950, () => this.startRound())
+    this.statusText.setText('Errou! Fim de jogo.')
+    this.time.delayedCall(900, () => this.endGame())
   }
 
   private endGame() {
@@ -302,8 +296,8 @@ export class BouquetScene extends Phaser.Scene {
     const best = Math.max(this.score, this.bestScore)
     this.statusText.setText(
       isRecord
-        ? `Fim! ${this.score}/${TOTAL_ROUNDS} — novo recorde!`
-        : `Fim! ${this.score}/${TOTAL_ROUNDS} · melhor: ${best}`,
+        ? `Fim! ${this.score} pego${this.score === 1 ? '' : 's'} — novo recorde!`
+        : `Fim! ${this.score} pego${this.score === 1 ? '' : 's'} · melhor: ${best}`,
     )
     this.game.events.emit('bouquet-finished', { score: this.score, best })
 
@@ -329,8 +323,8 @@ export class BouquetScene extends Phaser.Scene {
   }
 
   private updateHud() {
-    this.roundText.setText(`Rodada ${Math.min(this.round, TOTAL_ROUNDS)}/${TOTAL_ROUNDS}`)
-    this.scoreText.setText(`Pegos ${this.score} · Recorde ${this.bestScore}`)
+    this.roundText.setText(`Seguidos ${this.score}`)
+    this.scoreText.setText(`Recorde ${this.bestScore}`)
   }
 
   private drawBackground() {

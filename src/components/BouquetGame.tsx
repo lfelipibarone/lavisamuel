@@ -59,7 +59,7 @@ export function BouquetGame({ layout = 'embed', onClose }: Props) {
       onFinished: ({ score, best }) => {
         setLastScore(score)
         setBestScore(best)
-        if (score >= 3) fireConfetti()
+        if (score >= 5) fireConfetti()
       },
     })
   }
@@ -106,8 +106,8 @@ export function BouquetGame({ layout = 'embed', onClose }: Props) {
       >
         <div className={styles.shellBar}>
           <div className={styles.shellMeta}>
-            <span>Recorde: {bestScore}/5</span>
-            {lastScore != null && <span>Última: {lastScore}/5</span>}
+            <span>Recorde: {bestScore}</span>
+            {lastScore != null && <span>Última: {lastScore}</span>}
           </div>
           <div className={styles.shellActions}>
             {started && !needsRotate && (
@@ -130,12 +130,13 @@ export function BouquetGame({ layout = 'embed', onClose }: Props) {
   return (
     <div className={styles.embed}>
       <p className={styles.embedLead}>
-        Toque no chão para correr e pegar o buquê. Cinco rodadas.
+        Toque no chão para correr e pegar o buquê. Errou uma vez — acabou. O ranking é
+        quantos você segurou seguidos.
       </p>
 
       <div className={styles.meta}>
-        <span>Recorde: {bestScore}/5</span>
-        {lastScore != null && <span>Última: {lastScore}/5</span>}
+        <span>Recorde: {bestScore}</span>
+        {lastScore != null && <span>Última: {lastScore}</span>}
       </div>
 
       {stage}
