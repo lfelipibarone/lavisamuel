@@ -66,7 +66,8 @@ export function PhotoDrive() {
   return (
     <div className={styles.embed}>
       <p className={styles.lead}>
-        Envie fotos do casamento. Elas vão para o Drive do casal e aparecem na galeria.
+        Envie fotos do casamento (até 40MB). Elas vão para o Drive do casal e aparecem na
+        galeria.
       </p>
 
       <label className={styles.nameField}>

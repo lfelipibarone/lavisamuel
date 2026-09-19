@@ -2,15 +2,28 @@ import { Readable } from 'node:stream'
 import { Hono } from 'hono'
 import { getDrive, getDriveFolderId } from '../lib/drive.js'
 
-const MAX_BYTES = 12 * 1024 * 1024
+const MAX_BYTES = 40 * 1024 * 1024
+const MAX_MB = MAX_BYTES / (1024 * 1024)
 const ALLOWED_TYPES = new Set([
   'image/jpeg',
+  'image/jpg',
   'image/png',
   'image/webp',
   'image/heic',
   'image/heif',
   'image/gif',
+  'image/heic-sequence',
+  'image/heif-sequence',
 ])
+
+function looksLikeImage(file: File): boolean {
+  if (ALLOWED_TYPES.has(file.type)) return true
+  // iOS sometimes sends empty MIME type
+  if (!file.type) {
+    return /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(file.name)
+  }
+  return file.type.startsWith('image/')
+}
 
 export const photosRoute = new Hono()
 
@@ -100,20 +113,32 @@ photosRoute.post('/', async (c) => {
         .replace(/\s+/g, ' ')
         .slice(0, 40) || null
 
-    if (!(file instanceof File)) {
-      return c.json({ error: 'Send a file field named "file"' }, 400)
+    if (!(file instanceof File) && !(file instanceof Blob)) {
+      return c.json({ error: 'Envie o campo "file" com uma imagem' }, 400)
     }
-    if (!ALLOWED_TYPES.has(file.type)) {
-      return c.json({ error: 'Only image uploads are allowed' }, 400)
+
+    const uploadFile = file as File
+    if (!looksLikeImage(uploadFile)) {
+      return c.json({ error: 'Só são permitidas imagens (JPG, PNG, WEBP, HEIC, GIF)' }, 400)
     }
-    if (file.size <= 0 || file.size > MAX_BYTES) {
-      return c.json({ error: 'Image must be between 1 byte and 12MB' }, 400)
+
+    const buffer = Buffer.from(await uploadFile.arrayBuffer())
+    if (buffer.length <= 0) {
+      return c.json({ error: 'Arquivo vazio — tente outra foto' }, 400)
+    }
+    if (buffer.length > MAX_BYTES) {
+      const mb = (buffer.length / (1024 * 1024)).toFixed(1)
+      return c.json(
+        { error: `A foto tem ${mb}MB. O limite é ${MAX_MB}MB — escolha uma menor ou comprima.` },
+        400,
+      )
     }
 
     const drive = getDrive()
     const folderId = getDriveFolderId()
-    const buffer = Buffer.from(await file.arrayBuffer())
-    const safeName = file.name.replace(/[^\w.\-() ]+/g, '_').slice(0, 120) || 'foto.jpg'
+    const safeName =
+      (uploadFile.name || 'foto.jpg').replace(/[^\w.\-() ]+/g, '_').slice(0, 120) || 'foto.jpg'
+    const mimeType = uploadFile.type || 'application/octet-stream'
 
     // Upload goes only to Google Drive (uses the owner's storage quota).
     const created = await drive.files.create({
@@ -123,7 +148,7 @@ photosRoute.post('/', async (c) => {
         appProperties: uploadedBy ? { uploadedBy } : undefined,
       },
       media: {
-        mimeType: file.type,
+        mimeType,
         body: Readable.from(buffer),
       },
       fields: 'id, name, mimeType, createdTime, appProperties',
@@ -137,7 +162,7 @@ photosRoute.post('/', async (c) => {
       {
         id,
         name: created.data.name ?? safeName,
-        mimeType: created.data.mimeType ?? file.type,
+        mimeType: created.data.mimeType ?? mimeType,
         createdAt: created.data.createdTime ?? null,
         uploadedBy: created.data.appProperties?.uploadedBy ?? uploadedBy,
         url: `/photos/${id}/file`,
