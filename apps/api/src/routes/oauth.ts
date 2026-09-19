@@ -27,8 +27,27 @@ oauthRoute.get('/google/callback', async (c) => {
   }
 
   const code = c.req.query('code')
+  const error = c.req.query('error')
+  const errorDescription = c.req.query('error_description')
+
+  if (error) {
+    return c.text(
+      `Google recusou o login: ${error}\n${errorDescription ?? ''}\n\nConfira no Google Cloud se o redirect URI é exatamente:\n${process.env.GOOGLE_OAUTH_REDIRECT_URI ?? '(GOOGLE_OAUTH_REDIRECT_URI não definido)'}`,
+      400,
+    )
+  }
+
   if (!code) {
-    return c.text('Missing code. Try /oauth/google again.', 400)
+    return c.html(`<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"/><title>OAuth</title></head>
+<body style="font-family:system-ui;max-width:40rem;margin:2rem auto;line-height:1.5">
+  <h1>Faltou o code do Google</h1>
+  <p>Essa URL de callback não pode ser aberta direto. Comece por:</p>
+  <p><a href="/oauth/google"><strong>/oauth/google</strong></a></p>
+  <p>No Google Cloud, o redirect URI tem que ser <em>exatamente</em>:</p>
+  <code>${process.env.GOOGLE_OAUTH_REDIRECT_URI ?? 'GOOGLE_OAUTH_REDIRECT_URI não definido no backend'}</code>
+  <p>Sem barra no final. Depois autorize com a conta dona do Drive.</p>
+</body></html>`, 400)
   }
 
   try {

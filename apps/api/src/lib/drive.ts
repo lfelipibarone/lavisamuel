@@ -68,11 +68,16 @@ export function getAuthUrl(): string {
 const TOKEN_PATH = resolve(process.cwd(), '.secrets/google-oauth-token.json')
 
 export function saveRefreshToken(refreshToken: string) {
-  writeFileSync(
-    TOKEN_PATH,
-    JSON.stringify({ refresh_token: refreshToken, savedAt: new Date().toISOString() }, null, 2),
-    'utf8',
-  )
+  try {
+    writeFileSync(
+      TOKEN_PATH,
+      JSON.stringify({ refresh_token: refreshToken, savedAt: new Date().toISOString() }, null, 2),
+      'utf8',
+    )
+  } catch (err) {
+    // In Docker there is often no writable .secrets — token must be copied to env.
+    console.warn('[oauth] could not write token file (use GOOGLE_OAUTH_REFRESH_TOKEN env):', err)
+  }
 }
 
 function loadRefreshToken(): string {
