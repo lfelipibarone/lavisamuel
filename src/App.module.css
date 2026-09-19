@@ -22,6 +22,18 @@
   font-weight: 300;
 }
 
+.footerNote a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footerNote a:hover,
+.footerNote a:focus-visible {
+  color: var(--ink);
+  outline: none;
+}
+
 .toast {
   position: fixed;
   left: 50%;

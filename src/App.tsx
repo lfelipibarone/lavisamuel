@@ -45,7 +45,16 @@ export default function App() {
       {bouquetFullscreen && <BouquetGame layout="fullscreen" onClose={closeHub} />}
       <footer className={styles.footer}>
         <p>Lavi & Samuel · 24 de setembro de 2026 · 10h</p>
-        <p className={styles.footerNote}>Feito com carinho para a competição do countdown.</p>
+        <p className={styles.footerNote}>
+          Feito com carinho pelo padrinho{' '}
+          <a href="https://felipibarone.com.br" target="_blank" rel="noreferrer">
+            Felipi Barone
+          </a>
+          {' · '}
+          <a href="https://felipibarone.com.br" target="_blank" rel="noreferrer">
+            felipibarone.com.br
+          </a>
+        </p>
       </footer>
 
       {toast && (

@@ -6,7 +6,9 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.65rem;
-  max-width: 34rem;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
 }
 
 @media (min-width: 520px) {
