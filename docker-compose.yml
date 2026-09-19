@@ -1,11 +1,37 @@
 services:
-  web:
-    build: .
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
     restart: unless-stopped
-    # Publish container port 80 without binding host :80 (Traefik owns host 80).
-    # In Dokploy Domains: Service = web, Port = 80
+    # Dokploy Domains: Service = api, Port = 3002 (optional if only reached via web /api)
+    ports:
+      - "3002"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: "3002"
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      DRIVE_FOLDER_ID: ${DRIVE_FOLDER_ID}
+      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${GOOGLE_OAUTH_CLIENT_SECRET}
+      GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
+      GOOGLE_OAUTH_REFRESH_TOKEN: ${GOOGLE_OAUTH_REFRESH_TOKEN:-}
+      ALLOW_OAUTH_SETUP: ${ALLOW_OAUTH_SETUP:-false}
+    networks:
+      - dokploy-network
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    restart: unless-stopped
+    # Dokploy Domains: Service = web, Port = 80
     ports:
       - "80"
+    depends_on:
+      - api
     networks:
       - dokploy-network
 

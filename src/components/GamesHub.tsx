@@ -2,36 +2,47 @@ import { useEffect, useId, type ReactNode } from 'react'
 import { useReveal } from '../hooks/useReveal'
 import styles from './GamesHub.module.css'
 
-export type GameId = 'quiz' | 'bouquet'
+export type HubId = 'quiz' | 'bouquet' | 'album'
 
-type GameTile = {
-  id: GameId
+type HubTile = {
+  id: HubId
   title: string
   blurb: string
   label: string
   image: string
+  kind: 'game' | 'album'
 }
 
-const TILES: GameTile[] = [
+const TILES: HubTile[] = [
   {
     id: 'quiz',
     title: 'Quiz do casal',
     blurb: 'Quem conhece melhor Lavi & Samuel?',
     label: '01',
     image: '/photos/VAG_7452-sm.webp',
+    kind: 'game',
+  },
+  {
+    id: 'album',
+    title: 'Álbum dos convidados',
+    blurb: 'Envie fotos — vão para o Drive e a galeria.',
+    label: '02',
+    image: '/photos/VAG_7404-sm.webp',
+    kind: 'album',
   },
   {
     id: 'bouquet',
     title: 'Pegue o buquê',
     blurb: 'Mini game Phaser — corre e captura.',
-    label: '02',
+    label: '03',
     image: '/photos/VAG_7335-sm.webp',
+    kind: 'game',
   },
 ]
 
 type Props = {
-  active: GameId | null
-  onOpen: (id: GameId) => void
+  active: HubId | null
+  onOpen: (id: HubId) => void
   onClose: () => void
   children: ReactNode
 }
@@ -58,11 +69,10 @@ export function GamesHub({ active, onOpen, onClose, children }: Props) {
   return (
     <section id="jogos" className={`section ${styles.section} reveal`} ref={sectionRef}>
       <div className="section__inner">
-        <p className="section__eyebrow">Jogos</p>
-        <h2 className="section__title">Mini games do casal</h2>
+        <p className="section__eyebrow">Jogos & álbum</p>
+        <h2 className="section__title">Mini games e fotos</h2>
         <p className="section__lead">
-          Escolha um quadrado e entre na brincadeira. A página fica leve — o jogo abre por
-          cima.
+          Jogue, envie fotos do dia e veja tudo aparecer na galeria.
         </p>
 
         <div className={styles.grid}>
@@ -101,7 +111,9 @@ export function GamesHub({ active, onOpen, onClose, children }: Props) {
           <div className={styles.panel} onClick={(e) => e.stopPropagation()}>
             <header className={styles.panelHead}>
               <div>
-                <p className={styles.panelEyebrow}>Mini game {activeTile.label}</p>
+                <p className={styles.panelEyebrow}>
+                  {activeTile.kind === 'album' ? 'Álbum' : 'Mini game'} {activeTile.label}
+                </p>
                 <h3 id={titleId} className={styles.panelTitle}>
                   {activeTile.title}
                 </h3>

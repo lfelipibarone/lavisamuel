@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Game {
+  QUIZ
+  BOUQUET
+}
+
+model Guest {
+  id        String       @id @default(cuid())
+  name      String
+  nameKey   String       @unique
+  createdAt DateTime     @default(now())
+  results   GameResult[]
+
+  @@index([createdAt])
+}
+
+model GameResult {
+  id        String   @id @default(cuid())
+  guestId   String
+  guest     Guest    @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  game      Game
+  score     Int
+  maxScore  Int
+  createdAt DateTime @default(now())
+
+  @@index([game, score(sort: Desc)])
+  @@index([guestId, game, createdAt])
+}
+
+model Photo {
+  id           String   @id @default(cuid())
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+  uploadedBy   String?
+  driveFileId  String?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
+}

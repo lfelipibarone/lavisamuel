@@ -11,6 +11,20 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+!.env.example
+
+# Secrets — never commit Google / cloud credentials
+.secrets/
+**/.secrets/
+*service-account*.json
+*credentials*.json
+client_secret*.json
+flowjifinance*.json
+*-*.iam.gserviceaccount.com*.json
+*-*.apps.googleusercontent.com.json
+
 
 # Editor directories and files
 .vscode/*

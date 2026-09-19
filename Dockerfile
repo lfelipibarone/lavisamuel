@@ -1,8 +1,10 @@
-# Build
+# Build frontend (Vite)
 FROM node:22-alpine AS build
 WORKDIR /app
 
 ENV NODE_OPTIONS=--max-old-space-size=2048
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=$VITE_API_URL
 
 COPY package.json package-lock.json ./
 RUN npm ci

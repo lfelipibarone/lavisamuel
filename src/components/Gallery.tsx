@@ -1,25 +1,60 @@
 import { useEffect, useRef, useState, type TouchEvent } from 'react'
-import { galleryItems } from '../data/gallery'
+import type { GalleryItem } from '../data/gallery'
 import { useReveal } from '../hooks/useReveal'
+import { GUEST_PHOTOS_EVENT, listGuestPhotos } from '../lib/api'
 import styles from './Gallery.module.css'
 
 export function Gallery() {
   const ref = useReveal<HTMLElement>()
+  const [items, setItems] = useState<GalleryItem[]>([])
+  const [loading, setLoading] = useState(true)
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
-  const active = activeIndex != null ? galleryItems[activeIndex] : null
   const touchStartX = useRef<number | null>(null)
+
+  const active = activeIndex != null ? items[activeIndex] : null
+
+  async function loadGuestPhotos() {
+    setLoading(true)
+    try {
+      const photos = await listGuestPhotos()
+      setItems(
+        photos.map((photo) => ({
+          id: `guest-${photo.id}`,
+          src: photo.url,
+          thumb: photo.url,
+          caption: photo.uploadedBy
+            ? `Enviada por ${photo.uploadedBy}`
+            : 'Foto dos convidados',
+          alt: photo.uploadedBy
+            ? `Foto enviada por ${photo.uploadedBy}`
+            : 'Foto enviada por convidado',
+        })),
+      )
+    } catch {
+      setItems([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    void loadGuestPhotos()
+    const onChange = () => void loadGuestPhotos()
+    window.addEventListener(GUEST_PHOTOS_EVENT, onChange)
+    return () => window.removeEventListener(GUEST_PHOTOS_EVENT, onChange)
+  }, [])
 
   function goPrev() {
     setActiveIndex((i) => {
-      if (i == null) return i
-      return (i - 1 + galleryItems.length) % galleryItems.length
+      if (i == null || items.length === 0) return i
+      return (i - 1 + items.length) % items.length
     })
   }
 
   function goNext() {
     setActiveIndex((i) => {
-      if (i == null) return i
-      return (i + 1) % galleryItems.length
+      if (i == null || items.length === 0) return i
+      return (i + 1) % items.length
     })
   }
 
@@ -37,7 +72,7 @@ export function Gallery() {
       window.removeEventListener('keydown', onKey)
       document.body.style.overflow = prev
     }
-  }, [activeIndex])
+  }, [activeIndex, items.length])
 
   function onTouchStart(e: TouchEvent) {
     touchStartX.current = e.changedTouches[0]?.clientX ?? null
@@ -57,25 +92,33 @@ export function Gallery() {
   return (
     <section id="galeria" className={`section ${styles.section} reveal`} ref={ref}>
       <div className="section__inner">
-        <p className="section__eyebrow">Ensaio</p>
-        <h2 className="section__title">Galeria com legendas</h2>
+        <p className="section__eyebrow">Convidados</p>
+        <h2 className="section__title">Galeria do casamento</h2>
         <p className="section__lead">
-          Toque para ampliar. Deslize ou use as setas para passar as fotos.
+          As fotos enviadas pelo álbum aparecem aqui. Toque para ampliar.
         </p>
 
-        <div className={styles.grid}>
-          {galleryItems.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              className={styles.item}
-              onClick={() => setActiveIndex(index)}
-            >
-              <img src={item.thumb} alt={item.alt} loading="lazy" />
-              <span className={styles.caption}>{item.caption}</span>
-            </button>
-          ))}
-        </div>
+        {loading && items.length === 0 ? (
+          <p className={styles.empty}>Carregando fotos…</p>
+        ) : items.length === 0 ? (
+          <p className={styles.empty}>
+            Ainda não há fotos. Abra o álbum dos convidados e envie a primeira!
+          </p>
+        ) : (
+          <div className={styles.grid}>
+            {items.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                className={styles.item}
+                onClick={() => setActiveIndex(index)}
+              >
+                <img src={item.thumb} alt={item.alt} loading="lazy" />
+                <span className={styles.caption}>{item.caption}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {active && activeIndex != null && (
@@ -88,14 +131,11 @@ export function Gallery() {
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          <figure
-            className={styles.figure}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <figure className={styles.figure} onClick={(e) => e.stopPropagation()}>
             <img src={active.src} alt={active.alt} />
             <figcaption>{active.caption}</figcaption>
             <p className={styles.counter}>
-              {activeIndex + 1} / {galleryItems.length}
+              {activeIndex + 1} / {items.length}
             </p>
           </figure>
 

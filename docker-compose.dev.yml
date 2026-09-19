@@ -1,0 +1,23 @@
+# Local development — Postgres for the API
+# Usage: docker compose -f docker-compose.dev.yml up -d
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lavi
+      POSTGRES_PASSWORD: lavi
+      POSTGRES_DB: laviesamuel
+    ports:
+      - "5434:5432"
+    volumes:
+      - laviesamuel_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lavi -d laviesamuel"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  laviesamuel_pg:

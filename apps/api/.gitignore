@@ -1,0 +1,20 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Secrets
+.secrets/
+*service-account*.json
+*credentials*.json
+flowjifinance*.json
+
+# Uploaded guest photos
+data/uploads/
+
+# Build
+dist
+
+# Prisma
+prisma/*.db
+prisma/*.db-journal
