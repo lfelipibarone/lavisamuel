@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import { notifyGuestPhotosChanged, uploadGuestPhoto } from '../lib/api'
+import {
+  GUEST_NAME_KEY,
+  notifyGuestPhotosChanged,
+  uploadGuestPhoto,
+} from '../lib/api'
 import styles from './PhotoDrive.module.css'
-
-const NAME_KEY = 'lavi-samuel-guest-name'
 
 export function PhotoDrive() {
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const [guestName, setGuestName] = useLocalStorage(NAME_KEY, '')
+  const [guestName, setGuestName] = useLocalStorage(GUEST_NAME_KEY, '')
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)

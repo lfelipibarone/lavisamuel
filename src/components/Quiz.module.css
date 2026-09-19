@@ -8,6 +8,40 @@
   font-weight: 300;
 }
 
+.nameField {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.nameField input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.saveOk {
+  margin: 0 0 0.85rem;
+  color: var(--accent);
+  font-size: 0.95rem;
+}
+
+.saveError {
+  margin: 0 0 0.85rem;
+  color: #8a2f2f;
+  font-size: 0.95rem;
+}
+
 .card {
   display: flex;
   flex-direction: column;

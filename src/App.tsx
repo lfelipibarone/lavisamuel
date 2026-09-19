@@ -5,6 +5,7 @@ import { BouquetGame } from './components/BouquetGame'
 import { Gallery } from './components/Gallery'
 import { GamesHub, type HubId } from './components/GamesHub'
 import { Hero } from './components/Hero'
+import { LeaderboardPanel } from './components/Leaderboard'
 import { PhotoDrive } from './components/PhotoDrive'
 import { Quiz } from './components/Quiz'
 import { useMediaQuery } from './hooks/useMediaQuery'
@@ -34,8 +35,9 @@ export default function App() {
       <main>
         <GamesHub active={modalHub} onOpen={setActiveHub} onClose={closeHub}>
           {modalHub === 'quiz' && <Quiz />}
-          {modalHub === 'album' && <PhotoDrive />}
           {modalHub === 'bouquet' && <BouquetGame />}
+          {modalHub === 'album' && <PhotoDrive />}
+          {modalHub === 'ranking' && <LeaderboardPanel />}
         </GamesHub>
         <Gallery />
       </main>

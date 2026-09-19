@@ -2,7 +2,7 @@ import { useEffect, useId, type ReactNode } from 'react'
 import { useReveal } from '../hooks/useReveal'
 import styles from './GamesHub.module.css'
 
-export type HubId = 'quiz' | 'bouquet' | 'album'
+export type HubId = 'quiz' | 'bouquet' | 'album' | 'ranking'
 
 type HubTile = {
   id: HubId
@@ -10,7 +10,7 @@ type HubTile = {
   blurb: string
   label: string
   image: string
-  kind: 'game' | 'album'
+  kind: 'game' | 'album' | 'ranking'
 }
 
 const TILES: HubTile[] = [
@@ -23,20 +23,28 @@ const TILES: HubTile[] = [
     kind: 'game',
   },
   {
+    id: 'bouquet',
+    title: 'Pegue o buquê',
+    blurb: 'Errou uma vez — acabou. Quantos seguidos?',
+    label: '02',
+    image: '/photos/VAG_7335-sm.webp',
+    kind: 'game',
+  },
+  {
     id: 'album',
     title: 'Álbum dos convidados',
     blurb: 'Envie fotos — vão para o Drive e a galeria.',
-    label: '02',
+    label: '03',
     image: '/photos/VAG_7404-sm.webp',
     kind: 'album',
   },
   {
-    id: 'bouquet',
-    title: 'Pegue o buquê',
-    blurb: 'Mini game Phaser — corre e captura.',
-    label: '03',
-    image: '/photos/VAG_7335-sm.webp',
-    kind: 'game',
+    id: 'ranking',
+    title: 'Ranking dos convidados',
+    blurb: 'Melhores placares do quiz e do buquê.',
+    label: '04',
+    image: '/photos/VAG_7637-sm.webp',
+    kind: 'ranking',
   },
 ]
 
@@ -45,6 +53,12 @@ type Props = {
   onOpen: (id: HubId) => void
   onClose: () => void
   children: ReactNode
+}
+
+function kindLabel(kind: HubTile['kind']) {
+  if (kind === 'album') return 'Álbum'
+  if (kind === 'ranking') return 'Ranking'
+  return 'Mini game'
 }
 
 export function GamesHub({ active, onOpen, onClose, children }: Props) {
@@ -72,7 +86,7 @@ export function GamesHub({ active, onOpen, onClose, children }: Props) {
         <p className="section__eyebrow">Jogos & álbum</p>
         <h2 className="section__title">Mini games e fotos</h2>
         <p className="section__lead">
-          Jogue, envie fotos do dia e veja tudo aparecer na galeria.
+          Jogue, envie fotos do dia e veja o ranking dos convidados.
         </p>
 
         <div className={styles.grid}>
@@ -112,7 +126,7 @@ export function GamesHub({ active, onOpen, onClose, children }: Props) {
             <header className={styles.panelHead}>
               <div>
                 <p className={styles.panelEyebrow}>
-                  {activeTile.kind === 'album' ? 'Álbum' : 'Mini game'} {activeTile.label}
+                  {kindLabel(activeTile.kind)} {activeTile.label}
                 </p>
                 <h3 id={titleId} className={styles.panelTitle}>
                   {activeTile.title}

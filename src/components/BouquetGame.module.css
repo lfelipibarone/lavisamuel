@@ -66,7 +66,6 @@
 }
 
 .shell .stage {
-  grid-area: 1 / 1;
   width: 100%;
   height: 100%;
   max-width: none;
@@ -80,6 +79,71 @@
   margin: 0 0 1rem;
   color: var(--ink-soft);
   font-weight: 300;
+}
+
+.nameField {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.nameField input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.shellBody {
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  min-height: 0;
+  height: 100%;
+  padding-top: 3rem;
+}
+
+.shellBody .nameField {
+  margin: 0 0.75rem 0.5rem;
+  color: rgba(232, 230, 225, 0.8);
+}
+
+.shellBody .nameField input {
+  background: rgba(20, 19, 17, 0.75);
+  border-color: rgba(232, 230, 225, 0.28);
+  color: #e8e6e1;
+}
+
+.saveOk,
+.saveError {
+  margin: 0 0.75rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.saveOk {
+  color: var(--accent);
+}
+
+.saveError {
+  color: #e8a0a0;
+}
+
+.embed .saveOk {
+  margin: -0.35rem 0 0.85rem;
+}
+
+.embed .saveError {
+  margin: -0.35rem 0 0.85rem;
+  color: #8a2f2f;
 }
 
 .meta {
