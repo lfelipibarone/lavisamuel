@@ -52,6 +52,19 @@ export function BouquetGame({ layout = 'embed', onClose }: Props) {
     gameRef.current?.scale.refresh()
   }, [needsRotate, isFullscreen])
 
+  const wasPortraitRef = useRef(needsRotate)
+
+  // After rotating from portrait → landscape with a valid name, start the game
+  useEffect(() => {
+    const cameFromPortrait = wasPortraitRef.current && !needsRotate
+    wasPortraitRef.current = needsRotate
+    if (!isFullscreen || !cameFromPortrait) return
+    if (started || gameRef.current) return
+    if (guestName.trim().length < 2) return
+    void startGame()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- start after rotate only
+  }, [needsRotate, isFullscreen])
+
   async function persistScore(score: number, name: string) {
     if (name.length < 2) {
       setSaveError('Digite seu nome acima para entrar no ranking.')
@@ -74,11 +87,26 @@ export function BouquetGame({ layout = 'embed', onClose }: Props) {
   }
 
   async function startGame() {
-    if (needsRotate || !hostRef.current || gameRef.current) return
     const name = guestName.trim()
     if (name.length < 2) {
       setSaveError('Digite seu nome (mín. 2 caracteres) antes de jogar.')
       return
+    }
+
+    if (needsRotate) {
+      setSaveError('Gire o celular para a horizontal e toque em Começar de novo.')
+      return
+    }
+
+    if (!hostRef.current) {
+      setSaveError('Aguarde um instante e toque em Começar de novo.')
+      return
+    }
+
+    if (gameRef.current) {
+      gameRef.current.destroy(true)
+      gameRef.current = null
+      hostRef.current.innerHTML = ''
     }
 
     setStarted(true)
@@ -86,61 +114,101 @@ export function BouquetGame({ layout = 'embed', onClose }: Props) {
     setSaveError(null)
     setSaveOk(false)
 
-    const { createBouquetGame } = await import('../game/bouquetGame')
-    gameRef.current = createBouquetGame(hostRef.current, {
-      bestScore,
-      onFinished: ({ score, best }) => {
-        setLastScore(score)
-        setBestScore(best)
-        if (score >= 5) fireConfetti()
-        void persistScore(score, name)
-      },
-    })
+    try {
+      const { createBouquetGame } = await import('../game/bouquetGame')
+      if (!hostRef.current) return
+      gameRef.current = createBouquetGame(hostRef.current, {
+        bestScore,
+        onFinished: ({ score, best }) => {
+          setLastScore(score)
+          setBestScore(best)
+          if (score >= 5) fireConfetti()
+          void persistScore(score, name)
+        },
+      })
+      window.requestAnimationFrame(() => {
+        gameRef.current?.scale.refresh()
+      })
+    } catch (err) {
+      setStarted(false)
+      setSaveError(err instanceof Error ? err.message : 'Não foi possível iniciar o jogo')
+    }
   }
 
   function playAgain() {
-    if (needsRotate) return
+    if (needsRotate) {
+      setSaveError('Gire o celular para a horizontal para jogar de novo.')
+      return
+    }
     gameRef.current?.destroy(true)
     gameRef.current = null
     if (hostRef.current) hostRef.current.innerHTML = ''
+    setStarted(false)
     window.requestAnimationFrame(() => {
       void startGame()
     })
   }
 
-  const nameField = (
-    <label className={styles.nameField}>
-      <span>Seu nome</span>
-      <input
-        type="text"
-        value={guestName}
-        onChange={(e) => setGuestName(e.target.value)}
-        placeholder="Como você aparece no ranking"
-        maxLength={40}
-        autoComplete="name"
-        disabled={started && !needsRotate}
-      />
-    </label>
+  const canStart = guestName.trim().length >= 2
+  const showStartCta = !started || needsRotate
+
+  const controls = (
+    <div className={styles.controls}>
+      <label className={styles.nameField}>
+        <span>Seu nome</span>
+        <input
+          type="text"
+          value={guestName}
+          onChange={(e) => setGuestName(e.target.value)}
+          placeholder="Como você aparece no ranking"
+          maxLength={40}
+          autoComplete="name"
+          disabled={started && !needsRotate}
+          enterKeyHint="done"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              ;(e.target as HTMLInputElement).blur()
+              void startGame()
+            }
+          }}
+        />
+      </label>
+
+      {showStartCta && (
+        <button
+          type="button"
+          className={styles.start}
+          disabled={!canStart}
+          onClick={() => void startGame()}
+        >
+          {needsRotate ? 'Gire o celular e comece' : 'Começar jogo'}
+        </button>
+      )}
+
+      {saveError && (
+        <p className={styles.saveError} role="alert">
+          {saveError}
+        </p>
+      )}
+      {saveOk && lastScore != null && (
+        <p className={styles.saveOk}>Placar {lastScore} no ranking!</p>
+      )}
+    </div>
   )
 
   const stage = (
     <div className={styles.stage}>
       <div ref={hostRef} className={styles.canvasHost} />
 
-      {needsRotate ? (
+      {needsRotate && (
         <div className={styles.rotate} role="status" aria-live="polite">
           <span className={styles.rotateIcon} aria-hidden="true" />
           <p className={styles.rotateTitle}>Vire o celular</p>
-          <p className={styles.rotateHint}>Gire para a horizontal para jogar.</p>
+          <p className={styles.rotateHint}>
+            Coloque na horizontal, depois toque em Começar.
+          </p>
         </div>
-      ) : (
-        !started && (
-          <div className={styles.overlay}>
-            <button type="button" className={styles.start} onClick={() => void startGame()}>
-              Começar jogo
-            </button>
-          </div>
-        )
       )}
     </div>
   )
@@ -172,15 +240,7 @@ export function BouquetGame({ layout = 'embed', onClose }: Props) {
           </div>
         </div>
         <div className={styles.shellBody}>
-          {nameField}
-          {saveError && (
-            <p className={styles.saveError} role="alert">
-              {saveError}
-            </p>
-          )}
-          {saveOk && lastScore != null && (
-            <p className={styles.saveOk}>Placar {lastScore} no ranking!</p>
-          )}
+          {controls}
           {stage}
         </div>
       </div>
@@ -194,21 +254,12 @@ export function BouquetGame({ layout = 'embed', onClose }: Props) {
         quantos você segurou seguidos.
       </p>
 
-      {nameField}
+      {controls}
 
       <div className={styles.meta}>
         <span>Recorde: {bestScore}</span>
         {lastScore != null && <span>Última: {lastScore}</span>}
       </div>
-
-      {saveError && (
-        <p className={styles.saveError} role="alert">
-          {saveError}
-        </p>
-      )}
-      {saveOk && lastScore != null && (
-        <p className={styles.saveOk}>Placar {lastScore} no ranking!</p>
-      )}
 
       {stage}
 
